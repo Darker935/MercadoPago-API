@@ -1,3 +1,5 @@
+import env from '../config/env';
+
 function getQuery(str: string) : any {
     let json = {}
     str
@@ -19,8 +21,8 @@ function getQuery(str: string) : any {
 export default (info, callback) => {
     let login = getQuery(info.req.url)
     if (
-        login.user ==  "Darker"
-        && login.password == "935"
+        login.user ==  env.WS_USER
+        && login.password == env.WS_PASSWORD
     ) callback(true)
     else callback(false)
 }
