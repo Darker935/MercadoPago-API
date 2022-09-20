@@ -18,7 +18,7 @@ export default (ws: WebSocket.WebSocket, data: any) => {
             createPayment(ws, mercadopago, data )
             break
         case 'refund':
-            refundPayment(mercadopago)
+            refundPayment(ws, mercadopago, data.id)
             break
         case 'verify':
             verifyPayment(mercadopago, data.id)
