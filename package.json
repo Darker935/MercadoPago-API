@@ -1,0 +1,36 @@
+{
+  "name": "Mercado Pago API",
+  "version": "1.0.0",
+  "description": "Sistema para detecção de pagamentos via PIX, utilizando Mercado Pago",
+  "main": "./src/main/server.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node-dev --respawn --transpile-only ./src/main/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "MercadoPago-API"
+  },
+  "author": "Darker935",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.1",
+    "lodash": "^4.17.21",
+    "request-ip": "^3.3.0",
+    "sqlite": "^4.1.2",
+    "sqlite3": "^5.0.11"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/mercadopago": "^1.5.6",
+    "@types/morgan": "^1.9.3",
+    "@types/request-ip": "^0.0.37",
+    "@types/ws": "^8.5.3",
+    "dotenv": "^16.0.2",
+    "helmet": "^6.0.0",
+    "mercadopago": "^1.5.14",
+    "morgan": "^1.10.0",
+    "ts-node-dev": "^2.0.0",
+    "ws": "^8.8.1"
+  }
+}
