@@ -1,5 +1,6 @@
 import WebSocket from "ws";
 import paymentHandler from "../../../plugins/mercadopago/payments"
+import { WsResponse } from "../../presentation/controllers/response-controller";
 import { Broadcast } from "./broadcast";
 
 function parse(str: string) {
@@ -10,10 +11,7 @@ function parse(str: string) {
 export const onMessage = (ws: WebSocket.WebSocket, data: WebSocket.RawData) : void =>{
     console.log('onMessage: '+ data.toString())
     let wsData = parse(data.toString());
-    if (!wsData) ws.send(JSON.stringify({
-        status: 403,
-        message: "Informe um JSON valido"
-    }))
+    if (!wsData) WsResponse.sendError(ws, "Informe um JSON valido")    
     paymentHandler(ws, wsData)
 }
 

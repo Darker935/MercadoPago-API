@@ -1,5 +1,7 @@
 import env from 'dotenv';
-env.config()
+env.config({
+  path: './.env'
+})
 
 export default {
   // server
@@ -16,5 +18,5 @@ export default {
 
   // WS Connection
   WS_USER: process.env.WS_USER,
-  WS_PASSWORD: process.env.PASSWORD
+  WS_PASSWORD: process.env.WS_PASSWORD
 }

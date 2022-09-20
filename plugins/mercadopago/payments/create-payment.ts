@@ -5,22 +5,15 @@ import { WebSocket } from "ws";
 import { inspect } from 'util'
 import { SqliteHelper } from "../../../src/infra/db/helpers/sqlite/sqlite-helper";
 import PaymentsQueue from "../tasks/payments-queue";
-
-function errorMsg(str: string) {
-    return JSON.stringify({
-        status: 403,
-        message: str
-    })
-}
+import { WsResponse } from "../../../src/presentation/controllers/response-controller";
 
 export const createPayment = (ws: WebSocket, mp: MercadoPago, data: any) => {
     if (!data.email)
-        return ws.send(errorMsg("Necessario informar um email"))
+        return WsResponse.sendError(ws, "Necessario informar um email")
     // if (!data.number)
     //     return ws.send(errorMsg("Informe um CPF/Numero"))
 
     let date = moment(Date.now() + (2 * 60 * 60 * 1000)).format("yyyy-MM-DDTHH:mm:ss") + ".000Z"
-    console.log(date)
 
     var payment_data: CreatePaymentPayload = {
         transaction_amount: 1,
@@ -35,7 +28,6 @@ export const createPayment = (ws: WebSocket, mp: MercadoPago, data: any) => {
     };
 
     mp.payment.create(payment_data).then(function (data2) {
-        console.log(inspect(data2,false,5,true))
         let body = data2.body;
         SqliteHelper.insert(
             "payments",
@@ -54,15 +46,13 @@ export const createPayment = (ws: WebSocket, mp: MercadoPago, data: any) => {
             ]
         )
         PaymentsQueue.startTimeout(ws)
-        ws.send(JSON.stringify({
-            status: 200,
-            message: "Criado com Sucesso",
+        WsResponse.send(ws, "Criado com sucesso", {
             email: data.email,
             copia_e_cola: body.point_of_interaction.transaction_data.qr_code,
             qr_code_base64: body.point_of_interaction.transaction_data.qr_code_base64
-        }))
+        })
     }).catch(function (error) {
         console.log(error.message)
-        ws.send("Falhou: "+error.message)
+        WsResponse.sendError(ws, "Falhou")
     });
 }

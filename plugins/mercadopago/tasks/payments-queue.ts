@@ -15,18 +15,18 @@ export default class PaymentsQueue {
     static startTimeout(ws: WebSocket) {
         if (PaymentsQueue.timeout) clearInterval(PaymentsQueue.timeout)
 
-        PaymentsQueue.timeout = setInterval(async()=>{
+        PaymentsQueue.timeout = setInterval(async () => {
             let sql = await SqliteHelper.all(PaymentsQueue.query_all)
             console.log(sql)
-            if (sql.length == 0) { 
+            if (sql.length == 0) {
                 clearInterval(PaymentsQueue.timeout)
                 PaymentsQueue.timeout = undefined;
             }
             sql.forEach(async transaction => {
                 let status: TransactionStatus = transaction.status
-                switch(status) {
+                switch (status) {
                     case 'approved':
-                    SqliteHelper.conn.exec('DELETE FROM payments WHERE id = '+transaction.id)
+                        //SqliteHelper.conn.exec('DELETE FROM payments WHERE id = ' + transaction.id)
                         break
                     case 'cancelled':
                         break
@@ -38,14 +38,10 @@ export default class PaymentsQueue {
                                 ['id', 'status'],
                                 [transaction.id, status]
                             )
-                            Broadcast.broadcast({
-                                status: 200,
-                                message: "Pagamento realizado!",
-                                data: {
-                                    id: transaction.id,
-                                    status: status,
-                                    email: transaction.email
-                                }
+                            Broadcast.send("Pagamento realizado!", {
+                                id: transaction.id,
+                                status: status,
+                                email: transaction.email
                             })
                         }
                         break

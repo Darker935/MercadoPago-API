@@ -3,8 +3,9 @@ import { createPayment, verifyPayment, refundPayment } from "."
 
 import mercadopago from 'mercadopago';
 import env from "../../../src/main/config/env";
+import { WsResponse } from "../../../src/presentation/controllers/response-controller";
 
-mercadopago.configurations.setAccessToken(env.MP_ACCESS_TOKEN)
+mercadopago.configurations.setAccessToken(env.MP_ACCESS_TOKEN as string)
 
 type MPOptions = 'create' | 'verify' | 'refund'
 
@@ -23,10 +24,7 @@ export default (ws: WebSocket.WebSocket, data: any) => {
             verifyPayment(mercadopago, data.id)
             break
         default:
-            ws.send(JSON.stringify({
-                status: 403,
-                message: "Necessario informar o tipo: 'type' is missing (create|verify|refund)"
-            }))
+            WsResponse.sendError(ws, "Necessario informar o tipo: 'type' is missing (create|verify|refund)")
             break
     }
 }
